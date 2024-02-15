@@ -3,8 +3,9 @@ import { CiSquarePlus } from "react-icons/ci";
 import Modal from "react-modal";
 import { toast } from 'react-toastify';
 import { useState } from 'react';
-import { addTodos } from './todos/TodoSlice';
-
+import { addTodos, deleteTodos } from './todos/TodoSlice';
+import { Link } from 'react-router-dom';
+import Index from './routes/routes';
 
 function App() {
   const todos = useSelector((state)=> state.todos);
@@ -13,6 +14,7 @@ function App() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+
   const closeModal = () => {
     setModalOpen(false);
   };
@@ -24,17 +26,32 @@ const handleAddTodo = (e) => {
   closeModal();
   toast.success('Nice! Todo Added Successfuly')
 }
+// const handleUpdateTodo = (e) => {
+//   e.preventDefault();
+//   // const todo = {title, description}
+//   // dispatch(addTodos(todo));
+//   closeModal();
+//   toast.success('Nice! Todo Updated Successfuly')
+// }
+
+const handleDelteTodo = (id) =>{
+  dispatch(deleteTodos(id))
+  toast.success('Deleted Successfuly')
+}
+
   return (
+    <>
+    <Index>
     <div className="w-8/12 mx-auto grid grid-cols-2 gap-8 my-12">
      {
-      todos && todos?.map((todo, idx)=>{
-        const {title, des} = todo;
-        return <div className='border rounded shadow-lg hover:shadow-2xl' key={idx}>
+      todos && todos?.map((todo)=>{
+        const {id, title, des} = todo;
+        return <div className='border rounded shadow-lg hover:shadow-2xl' key={id}>
           <h1 className='text-xl font-bold p-4 border-b text-center bg-[#38BDF8] text-white rounded-t'>{title}</h1>
           <p className='font-semibold text-center text-gray-600 p-4'>{des}</p>
           <div className='flex justify-center gap-4 py-8'>
-          <button className='flex  bg-sky-400 text-white font-semibold px-2 rounded hover:shadow-2xl hover:bg-sky-500'>Update</button>
-          <button className='flex  bg-sky-400 text-white font-semibold px-2 rounded hover:shadow-2xl hover:bg-sky-500'>Delete</button>
+          <Link to={'/update-todo'} className='flex  bg-sky-400 text-white font-semibold px-2 rounded hover:shadow-2xl hover:bg-sky-500'>Update</Link>
+          <button onClick={()=>handleDelteTodo(id)} className='flex  bg-sky-400 text-white font-semibold px-2 rounded hover:shadow-2xl hover:bg-sky-500'>Delete</button>
           </div>
         </div>
       })
@@ -45,11 +62,11 @@ const handleAddTodo = (e) => {
 
 
 
-     {/* Modal */}
+     {/* Modal for add todo */}
      <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        contentLabel="Add User Modal"
+        contentLabel="Add todo"
         ariaHideApp={false}
       >
 <div className='w-full md:w-1/2 lg:w-1/2 mx-auto px-4 md:px-8 lg:px-24 bg-sky-50 rounded shadow-xl py-'>
@@ -96,7 +113,66 @@ const handleAddTodo = (e) => {
      </form>
    </div>
       </Modal>
+
+
+
+      {/* Modal for update todo */}
+  
+
+     {/* <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="update todo"
+        ariaHideApp={false}
+      >
+<div className='w-full md:w-1/2 lg:w-1/2 mx-auto px-4 md:px-8 lg:px-24 bg-sky-50 rounded shadow-xl py-'>
+   <h3 className='text-center font-bold text-2xl pt-4'>ADD YOUR TODO</h3>
+     <form 
+    onSubmit={handleUpdateTodo}
+     className="w-full ">
+
+    <div className="mt-4">
+     <label className="text-sm font-bold">Title:
+     </label>
+      <input
+      type="text" 
+      className="border border-sky-500 w-full p-2 focus:outline-none bg-transparent"
+      placeholder="Your Title Please."
+      name="title"
+      value={title}
+      onChange={(e)=>setTitle(e.target.value)}
+      required
+       />
+     </div>
+
+    <div className="mt-4">
+     <label className="text-sm font-bold">Description:
+     </label>
+      <textarea
+      type="text" 
+      className="border border-sky-500 w-full p-2 focus:outline-none bg-transparent"
+      placeholder="Description Please."
+      name="description"
+      rows={3}
+      required
+      value={description}
+      onChange={(e)=>setDescription(e.target.value)}
+       />
+     </div>
+     <div className=" mt-12 mb-8 pb-8">
+      <input
+            className="hover:bg-sky-600 bg-sky-500 rounded text-white font-bold py-2 px-4 w-full cursor-pointer hover:shadow-2xl "
+            type="submit"
+            value="UPDATE TODO"
+                />
+              </div>
+     </form>
+   </div>
+      </Modal> */}
     </div>
+    </Index>
+    </>
+    
   )
 }
 export default App;
