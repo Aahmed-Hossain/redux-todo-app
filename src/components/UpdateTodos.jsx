@@ -1,17 +1,28 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { useNavigate } from 'react-router-dom'
+import { useLocation } from "react-router-dom";
+import { updateTodo } from "../todos/TodoSlice";
+import { useDispatch } from 'react-redux';
+import { toast} from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 const UpdateTodos = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const location = useLocation();
+  const [id] = useState(location.state.id);
+  const [title, setTitle] = useState(location.state.title);
+  const [des, setDes] = useState(location.state.des);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleUpdateTodo = (e) => {
     e.preventDefault();
+    dispatch(updateTodo({id, title, des })) 
+    navigate('/');
     toast.success("Nice! Todo Updated Successfuly");
-    // setSelectedTodo(null);
   };
+
   return (
-    <div className="border px-20 py-8">
-      <div className="w-full md:w-1/2 lg:w-1/2 mx-auto px-4 md:px-8 lg:px-24 bg-sky-50 rounded shadow-xl py-">
+    <div className="border px-24 py-8 w-8/12 mx-auto mt-6">
+      <div className="w-full mx-auto px-4 md:px-8 lg:px-24 bg-sky-50 rounded shadow-xl py-">
         <h3 className="text-center font-bold text-2xl pt-4">
           UPDATE YOUR TODO
         </h3>
@@ -24,25 +35,25 @@ const UpdateTodos = () => {
               className="border border-sky-500 w-full p-2 focus:outline-none bg-transparent"
               placeholder="Your Title Please."
               name="title"
-              defaultValue={title}
+              value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
             />
           </div>
-          {/* description input */}
+          {/* des input */}
           <div className="mt-4">
             <label className="text-sm font-bold">
-              Descriptionsssssssssssssss:
+              Description:
             </label>
             <textarea
               type="text"
               className="border border-sky-500 w-full p-2 focus:outline-none bg-transparent"
-              placeholder="Description Please."
-              name="description"
+              placeholder="Des Please."
+              name="des"
               rows={3}
               required
-              defaultValue={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={des}
+              onChange={(e) => setDes(e.target.value)}
             />
           </div>
           <div className=" mt-12 mb-8 pb-8">
